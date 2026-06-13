@@ -1,0 +1,25 @@
+{
+  "name": "store-aflak-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@sequelize/core": "^7.0.0-alpha.48",
+    "@sequelize/mysql": "^7.0.0-alpha.48",
+    "body-parser": "^2.2.2",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-validation": "^4.1.1",
+    "http-errors": "^2.0.1",
+    "morgan": "^1.11.0",
+    "mysql2": "^3.22.5",
+    "nodemon": "^3.1.14"
+  }
+}
