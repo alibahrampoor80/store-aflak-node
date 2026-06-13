@@ -1,4 +1,4 @@
-import {sequelizeConfig} from "./sequelize.config.js";
+// import {sequelizeConfig} from "./sequelize.config.js";
 import {
     productColorModel,
     productDetailModel,
@@ -16,5 +16,5 @@ export async function modelInitial() {
     productModel.hasMany(productSizeModel, {foreignKey: "productId", sourceKey: "id", as: "sizes"})
     productSizeModel.belongsTo(productModel, {foreignKey: "productId", targetKey: "id"})
 
-    await sequelizeConfig.sync({force: true})
+    // await sequelizeConfig.sync({force: true})
 }

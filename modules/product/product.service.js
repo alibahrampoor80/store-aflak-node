@@ -25,7 +25,7 @@ async function createProductService(req, res, next) {
         const product = await productModel.create({
             title,
             description,
-            price,
+            price: +price,
             discount,
             active_discount,
             count,
@@ -36,7 +36,7 @@ async function createProductService(req, res, next) {
             let detailList = []
             for (const item of details) {
                 detailList.push({
-                    key: item?.id,
+                    key: item?.key,
                     value: item?.value,
                     productId: product?.id,
                 })
@@ -73,6 +73,7 @@ async function createProductService(req, res, next) {
                 for (const item of sizes) {
                     sizingList.push({
                         size: item?.size,
+                        price: item?.price,
                         discount: item?.discount,
                         active_discount: item?.active_discount,
                         count: item?.count,
@@ -95,5 +96,48 @@ async function createProductService(req, res, next) {
     }
 }
 
+async function getProductsService(req, res, next) {
+    try {
+        const products = await productModel.findAll({})
+        return res.json({
+            products
+        })
+    } catch (error) {
+        next(error)
+    }
+}
 
-export {createProductService}
+async function getProductByIdService(req, res, next) {
+    try {
+        const {id} = req.params
+        const product = await productModel.findOne({
+            where: {
+                id
+            },
+            include: [
+                {
+                    model: productDetailModel,
+                    as: "details"
+                },
+                {
+                    model: productColorModel,
+                    as: "colors",
+                },
+                {
+                    model: productSizeModel,
+                    as: "sizes"
+                },
+
+            ]
+        })
+        if (!product) throw createHttpError(404, "محصول یافت نشد")
+        return res.json({
+            product
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+export {createProductService, getProductsService, getProductByIdService}

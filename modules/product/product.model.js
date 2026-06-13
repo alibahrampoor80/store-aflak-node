@@ -2,7 +2,6 @@ import {sequelizeConfig} from "../../config/sequelize.config.js";
 import {DataTypes} from "@sequelize/core";
 import {productType} from "../../common/constant/product.const.js";
 
-
 const productModel = sequelizeConfig.define('product', {
     id: {
         type: DataTypes.INTEGER,
@@ -14,7 +13,7 @@ const productModel = sequelizeConfig.define('product', {
         allowNull: false,
     },
     price: {
-        type: DataTypes.DECIMAL(10, 2), allowNull: true
+        type: DataTypes.DECIMAL(15, 0), allowNull: true
     },
     discount: {
         type: DataTypes.INTEGER,
@@ -52,7 +51,7 @@ const productColorModel = sequelizeConfig.define('product_color', {
     color_code: {type: DataTypes.STRING(250)},
     productId: {type: DataTypes.INTEGER},
     count: {type: DataTypes.INTEGER, defaultValue: 0},
-    price: {type: DataTypes.DECIMAL(10, 2), defaultValue: 0},
+    price: {type: DataTypes.DECIMAL(15, 0), defaultValue: 0},
     discount: {type: DataTypes.INTEGER, defaultValue: 0, allowNull: true},
     active_discount: {type: DataTypes.BOOLEAN, defaultValue: false, allowNull: true},
 }, {modelName: "product_color", timestamps: true, createdAt: "created_at", updatedAt: "updated_at"})
@@ -62,7 +61,7 @@ const productSizeModel = sequelizeConfig.define('product_size', {
     size: {type: DataTypes.STRING(200)},
     productId: {type: DataTypes.INTEGER},
     count: {type: DataTypes.INTEGER, defaultValue: 0},
-    price: {type: DataTypes.DECIMAL(10, 2), defaultValue: 0},
+    price: {type: DataTypes.DECIMAL(15, 0), defaultValue: 0},
     discount: {type: DataTypes.INTEGER, defaultValue: 0, allowNull: true},
     active_discount: {type: DataTypes.BOOLEAN, defaultValue: false, allowNull: true},
 }, {modelName: "product_size", timestamps: true, createdAt: "created_at", updatedAt: "updated_at"})
