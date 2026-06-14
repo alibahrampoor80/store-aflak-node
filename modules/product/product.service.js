@@ -139,5 +139,20 @@ async function getProductByIdService(req, res, next) {
     }
 }
 
+async function deleteProductService(req, res, next) {
+    const {id} = req.params
+    try {
+        const product = await productModel.findByPk(id)
+        if (!product) throw createHttpError(404, "محصول مورد نظر پیدا نشد")
+        await product.destroy()
+        return res.json({
+            status: 201,
+            message: "محصول مورد نظر حذف شد"
+        })
+    } catch (error) {
+        next(error)
+    }
+}
 
-export {createProductService, getProductsService, getProductByIdService}
+
+export {createProductService, getProductsService, getProductByIdService, deleteProductService}

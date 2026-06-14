@@ -42,28 +42,49 @@ const productDetailModel = sequelizeConfig.define('product_detail', {
     id: {type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true,},
     key: {type: DataTypes.STRING(150)},
     value: {type: DataTypes.STRING(150)},
-    productId: {type: DataTypes.INTEGER},
+    productId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: productModel,
+            key: 'id',
+        },
+        onDelete: 'CASCADE',
+    },
 }, {modelName: 'product_detail', timestamps: true, createdAt: "created_at", updatedAt: "updated_at"})
 
 const productColorModel = sequelizeConfig.define('product_color', {
     id: {type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true,},
     color_name: {type: DataTypes.STRING(200)},
     color_code: {type: DataTypes.STRING(250)},
-    productId: {type: DataTypes.INTEGER},
     count: {type: DataTypes.INTEGER, defaultValue: 0},
     price: {type: DataTypes.DECIMAL(15, 0), defaultValue: 0},
     discount: {type: DataTypes.INTEGER, defaultValue: 0, allowNull: true},
     active_discount: {type: DataTypes.BOOLEAN, defaultValue: false, allowNull: true},
+    productId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: productModel,
+            key: 'id',
+        },
+        onDelete: 'CASCADE',
+    },
 }, {modelName: "product_color", timestamps: true, createdAt: "created_at", updatedAt: "updated_at"})
 
 const productSizeModel = sequelizeConfig.define('product_size', {
     id: {type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true,},
     size: {type: DataTypes.STRING(200)},
-    productId: {type: DataTypes.INTEGER},
     count: {type: DataTypes.INTEGER, defaultValue: 0},
     price: {type: DataTypes.DECIMAL(15, 0), defaultValue: 0},
     discount: {type: DataTypes.INTEGER, defaultValue: 0, allowNull: true},
     active_discount: {type: DataTypes.BOOLEAN, defaultValue: false, allowNull: true},
+    productId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: productModel,
+            key: 'id',
+        },
+        onDelete: 'CASCADE',
+    },
 }, {modelName: "product_size", timestamps: true, createdAt: "created_at", updatedAt: "updated_at"})
 
 export {productModel, productDetailModel, productColorModel, productSizeModel}
