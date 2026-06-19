@@ -5,6 +5,7 @@ import {
     productModel,
     productSizeModel
 } from "../modules/product/product.model.js";
+import {otpModel, usersModel} from "../modules/users/users.model.js";
 
 export async function modelInitial() {
     productModel.hasMany(productDetailModel, {foreignKey: 'productId', sourceKey: "id", as: "details",})
@@ -15,6 +16,10 @@ export async function modelInitial() {
 
     productModel.hasMany(productSizeModel, {foreignKey: "productId", sourceKey: "id", as: "sizes"})
     productSizeModel.belongsTo(productModel, {foreignKey: "productId", targetKey: "id"})
+
+    usersModel.hasOne(otpModel, {foreignKey: "userId", as: "otp", sourceKey: "id"})
+    otpModel.hasOne(usersModel, {foreignKey: "otpId", as: "otp", sourceKey: "id"})
+    otpModel.belongsTo(usersModel, {foreignKey: "userId", targetKey: "id"})
 
     // await sequelizeConfig.sync({force: true})
 }

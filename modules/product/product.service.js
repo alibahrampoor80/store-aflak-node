@@ -48,7 +48,6 @@ async function createProductService(req, res, next) {
         }
 
         if (type === productType.coloring) {
-
             if (colors && Array.isArray(colors)) {
                 let colorsList = []
                 for (const item of colors) {
