@@ -1,6 +1,7 @@
 import {otpModel, usersModel} from "../users/users.model.js";
 import createHttpError from "http-errors";
 import jwt from "jsonwebtoken";
+import {refreshTokenModel} from "../users/refreshToken.model.js";
 
 async function sendOtpService(req, res, next) {
     try {
@@ -109,18 +110,31 @@ function generateToken(payload) {
 
 async function verifyRefreshTokenService(req, res, next) {
     try {
+        const {refreshToken: tokenBody} = req.body
         const {REFRESH_TOKEN_SECRET} = process.env
-        const {refreshToken} = req.body
-        if (!refreshToken) throw createHttpError(401, "لطفا وارد سایت شوید")
-        const verified = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET)
+        if (!tokenBody) throw createHttpError(401, "لطفا وارد سایت شوید")
+        const verified = jwt.verify(tokenBody, REFRESH_TOKEN_SECRET)
         if (verified?.userId) {
+
             const user = await usersModel.findByPk(verified?.userId)
             if (!user) throw createHttpError(401, "لطفا وارد حساب کاربری خود شوید")
+
+            const existToken = await refreshTokenModel.findOne({
+                where: {
+                    token: tokenBody
+                }
+            })
+            if (existToken) throw createHttpError(401, "توکن منقضی شده است")
+            await refreshTokenModel.create({
+                token: tokenBody,
+                userId: user?.id
+            })
+
             const {accessToken, refreshToken} = generateToken({userId: user.id})
             return res.json({accessToken, refreshToken})
         }
     } catch (err) {
-        next(createHttpError(401, "لطفا وارد حساب کاربری خود شوید"))
+        next(err)
     }
 }
 

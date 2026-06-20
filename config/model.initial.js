@@ -6,6 +6,7 @@ import {
     productSizeModel
 } from "../modules/product/product.model.js";
 import {otpModel, usersModel} from "../modules/users/users.model.js";
+import {refreshTokenModel} from "../modules/users/refreshToken.model.js";
 
 export async function modelInitial() {
     productModel.hasMany(productDetailModel, {foreignKey: 'productId', sourceKey: "id", as: "details",})
@@ -21,5 +22,8 @@ export async function modelInitial() {
     otpModel.hasOne(usersModel, {foreignKey: "otpId", as: "otp", sourceKey: "id"})
     otpModel.belongsTo(usersModel, {foreignKey: "userId", targetKey: "id"})
 
+    usersModel.hasOne(refreshTokenModel, {foreignKey: "userId", as: "refreshToken", sourceKey: "id"})
+    refreshTokenModel.belongsTo(usersModel, {foreignKey: "userId", targetKey: "id"})
     // await sequelizeConfig.sync({force: true})
+    // await refreshTokenModel.sync()
 }
