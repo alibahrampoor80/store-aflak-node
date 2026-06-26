@@ -40,6 +40,7 @@ async function authGuard(req, res, next) {
                 if (jwtError.name === 'JsonWebTokenError') {
                     throw createHttpError(401, "توکن نامعتبر است")
                 }
+
                 throw createHttpError(401, "خطا در احراز هویت")
             }
         }
