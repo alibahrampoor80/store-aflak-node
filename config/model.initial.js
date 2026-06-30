@@ -9,6 +9,8 @@ import {otpModel, usersModel} from "../modules/users/users.model.js";
 import {refreshTokenModel} from "../modules/users/refreshToken.model.js";
 import {basketModel} from "../modules/basket/basket.model.js";
 import {discountModel} from "../modules/discount/discount.model.js";
+import {orderItemsModel, orderModel} from "../modules/order/order.model.js";
+import {paymentModel} from "../modules/payment/payment.model.js";
 
 export async function modelInitial() {
     productModel.hasMany(productDetailModel, {foreignKey: 'productId', sourceKey: "id", as: "details",})
@@ -39,7 +41,15 @@ export async function modelInitial() {
     basketModel.belongsTo(productSizeModel, {foreignKey: "sizeId", targetKey: "id", as: "size",})
     basketModel.belongsTo(discountModel, {foreignKey: "discountId", targetKey: "id", as: "discount",})
 
+    orderModel.hasMany(orderItemsModel, {foreignKey: "orderId", sourceKey: "id", as: "items"})
+    usersModel.hasMany(orderModel, {foreignKey: "userId", sourceKey: "id", as: "orders"})
+    orderItemsModel.belongsTo(orderModel, {foreignKey: "orderId", targetKey: "id"})
+
+    orderModel.hasOne(paymentModel, {foreignKey: "orderId", as: "payment", sourceKey: "id",})
+    paymentModel.belongsTo(orderModel, {foreignKey: "orderId", as: "order", targetKey: "id"})
+    usersModel.hasMany(paymentModel, {foreignKey: "userId", sourceKey: "id", as: "payment",})
+
     await sequelizeConfig.sync({alter: true})
 
-    // await refreshTokenModel.sync()
+    // await sequelizeConfig.sync()
 }

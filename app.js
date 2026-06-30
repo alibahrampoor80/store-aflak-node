@@ -4,15 +4,16 @@ import './modules/product/product.model.js'
 import {modelInitial} from "./config/model.initial.js";
 import morgan from "morgan";
 import {allRoutes} from "./routes/allRoutes.js";
+import cors from 'cors'
 
 async function main() {
-
 
     const app = express()
     app.use(express.static('public'))
     app.use(express.json())
     app.use(express.urlencoded({extended: true}))
     app.use(morgan("dev"))
+    app.use(cors())
     await modelInitial()
     app.use("/api", allRoutes)
     app.use((req, res, next) => {
@@ -32,7 +33,7 @@ async function main() {
         }
 
         return res.status(statusCode).json({
-             messageError,
+            messageError,
 
         })
     })

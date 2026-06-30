@@ -153,5 +153,4 @@ async function deleteProductService(req, res, next) {
     }
 }
 
-
 export {createProductService, getProductsService, getProductByIdService, deleteProductService}
