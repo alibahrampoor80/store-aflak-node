@@ -76,6 +76,26 @@ async function addToCartService(req, res, next) {
     }
 }
 
+async function deleteItemBasketService(req, res, next) {
+    try {
+        const {id: userId = undefined} = req.user ?? {}
+        const {productId, sizeId, colorId} = req.params
+
+        const {basket} = await getUserBasketById(userId)
+        const item = basket.find(item => item.id === +productId)
+        if (!item) throw createHttpError(404, "محصول مورد نظر یافت نشد")
+
+        const resDeleted = await basketModel.destroy({where: {productId: item.id, userId}})
+
+        res.json({
+            message: "محصول از سبد خرید حذف شد"
+        })
+    } catch (err) {
+        next(err)
+    }
+
+}
+
 async function getCartService(req, res, next) {
     try {
         const {id: userId} = req.user ?? {}
@@ -195,4 +215,4 @@ async function getUserBasketById(userId) {
     }
 }
 
-export {addToCartService, getCartService, getUserBasketById}
+export {addToCartService, getCartService, getUserBasketById, deleteItemBasketService}

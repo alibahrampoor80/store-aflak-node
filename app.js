@@ -1,6 +1,5 @@
 import express from 'express';
 import 'dotenv/config'
-import './modules/product/product.model.js'
 import {modelInitial} from "./config/model.initial.js";
 import morgan from "morgan";
 import {allRoutes} from "./routes/allRoutes.js";
@@ -24,7 +23,7 @@ async function main() {
     })
 
     app.use((err, req, res, next) => {
-        const statusCode = err?.status ?? err?.statusCode ?? 500
+        const statusCode = err?.status ?? err?.status ?? 500
         let messageError = err?.message ?? "internal server error"
 
         if (err?.name == "ValidationError") {
@@ -32,13 +31,13 @@ async function main() {
             messageError = details?.body?.[0]?.message ?? "internal server error"
         }
 
-        return res.status(statusCode).json({
+        return res?.status(statusCode).json({
             messageError,
 
         })
     })
 
-    const port = process.env.PORT || 3000
+    const port = process.env.PORT ?? 3000
     app.listen(port, () => {
         console.log(`Express server started http://localhost:${port}`)
     })

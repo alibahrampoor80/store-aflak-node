@@ -11,6 +11,7 @@ import {basketModel} from "../modules/basket/basket.model.js";
 import {discountModel} from "../modules/discount/discount.model.js";
 import {orderItemsModel, orderModel} from "../modules/order/order.model.js";
 import {paymentModel} from "../modules/payment/payment.model.js";
+import {permissionModel, roleModel, rolePermissionModel} from "../modules/RBAC/rbac.model.js";
 
 export async function modelInitial() {
     productModel.hasMany(productDetailModel, {foreignKey: 'productId', sourceKey: "id", as: "details",})
@@ -44,12 +45,20 @@ export async function modelInitial() {
     orderModel.hasMany(orderItemsModel, {foreignKey: "orderId", sourceKey: "id", as: "items"})
     usersModel.hasMany(orderModel, {foreignKey: "userId", sourceKey: "id", as: "orders"})
     orderItemsModel.belongsTo(orderModel, {foreignKey: "orderId", targetKey: "id"})
-
+    orderItemsModel.belongsTo(productModel, {foreignKey: "productId", targetKey: "id", as: "product",})
+    orderItemsModel.belongsTo(productColorModel, {foreignKey: "colorId", targetKey: "id", as: "color",})
+    orderItemsModel.belongsTo(productSizeModel, {foreignKey: "sizeId", targetKey: "id", as: "size",})
     orderModel.hasOne(paymentModel, {foreignKey: "orderId", as: "payment", sourceKey: "id",})
     paymentModel.belongsTo(orderModel, {foreignKey: "orderId", as: "order", targetKey: "id"})
     usersModel.hasMany(paymentModel, {foreignKey: "userId", sourceKey: "id", as: "payment",})
 
-    await sequelizeConfig.sync({alter: true})
+    roleModel.hasMany(rolePermissionModel, {foreignKey: "roleId", sourceKey: "id",as: "permission"})
+    permissionModel.hasMany(rolePermissionModel, {foreignKey: "permissionId", sourceKey: "id",as: "roles"})
+    rolePermissionModel.belongsTo(roleModel, {foreignKey: "roleId", targetKey: "id",})
+    rolePermissionModel.belongsTo(permissionModel, {foreignKey: "permissionId", targetKey: "id",})
+
+
+    // await sequelizeConfig.sync({alter: true})
 
     // await sequelizeConfig.sync()
 }
