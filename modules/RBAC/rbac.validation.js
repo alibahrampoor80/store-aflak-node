@@ -36,4 +36,13 @@ const rbacPermissionValidation = validate({
     })
 })
 
-export {rbacRoleValidation, rbacPermissionValidation}
+const assignRoleToPermissionValidation = validate({
+    body: Joi.object({
+        roleId: Joi.number().required(),
+        permissions: Joi.array().items(
+            Joi.number().required()
+        ).required(),
+    })
+})
+
+export {rbacRoleValidation, rbacPermissionValidation, assignRoleToPermissionValidation}

@@ -1,5 +1,6 @@
-import {permissionModel, roleModel} from "./rbac.model.js";
+import {permissionModel, roleModel, rolePermissionModel} from "./rbac.model.js";
 import createHttpError from "http-errors";
+import {Op} from "@sequelize/core";
 
 async function createRoleService(req, res, next) {
     try {
@@ -19,7 +20,6 @@ async function createRoleService(req, res, next) {
     }
 }
 
-
 async function createPermissionService(req, res, next) {
     try {
         const {title, description} = req.body
@@ -38,7 +38,68 @@ async function createPermissionService(req, res, next) {
     }
 }
 
+async function getAllRolesService(req, res, next) {
+    try {
+        const roles = await roleModel.findAll({attributes: ['id', 'title', 'description']})
+        return res.json({
+            result: roles
+        })
+    } catch (err) {
+        next(err)
+    }
+}
+
+async function getAllPermissionsService(req, res, next) {
+    try {
+        const roles = await permissionModel.findAll({attributes: ['id', 'title', 'description']})
+        return res.json({
+            result: roles
+        })
+    } catch (err) {
+        next(err)
+    }
+}
+
+async function assignPermissionToRoleService(req, res, next) {
+    try {
+        let {roleId, permissions = []} = req.body
+        const role = await roleModel.findOne({where: {id: roleId}})
+        if (!role) throw createHttpError(404, "نقش مورد نظر پیدا نشد")
+
+        if (permissions.length > 0) {
+            const permissionsCount = await permissionModel.count({
+                where: {
+                    id: {
+                        [Op.in]: permissions
+                    }
+                }
+            })
+
+            if (permissionsCount !== permissions.length) {
+                throw createHttpError(400, "یک لیست معتبر ارسال کنید")
+            }
+
+            const permissionsList = permissions.map((permission) => (
+                {
+                    roleId,
+                    permissionId: permission
+                }
+            ))
+
+            await rolePermissionModel.bulkCreate(permissionsList, {
+                updateOnDuplicate: ['permissionId', "roleId"],
+            })
+            return res.json({
+                message: "اختصاص مجوز به نقش داده شد"
+            })
+        }
+    } catch (err) {
+        next(err)
+    }
+}
 
 export {
-    createRoleService, createPermissionService
+    createRoleService, createPermissionService,
+    assignPermissionToRoleService,
+    getAllRolesService, getAllPermissionsService
 }

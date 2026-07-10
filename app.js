@@ -23,7 +23,7 @@ async function main() {
     })
 
     app.use((err, req, res, next) => {
-        const statusCode = err?.status ?? err?.status ?? 500
+        const statusCode = err?.statusCode ?? err?.status ?? 500
         let messageError = err?.message ?? "internal server error"
 
         if (err?.name == "ValidationError") {
